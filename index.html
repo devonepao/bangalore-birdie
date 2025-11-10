@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Bangalore Birdie - A Flappy Bird style game featuring iconic Bangalore challenges">
+    <title>Bangalore Birdie</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="start-screen" class="screen">
+            <h1>🐦 Bangalore Birdie</h1>
+            <p>Navigate through Bangalore's notorious challenges!</p>
+            <div class="controls-info">
+                <p>Desktop: Press SPACE or Click to fly</p>
+                <p>Mobile: Tap to fly</p>
+            </div>
+            <button id="start-btn" class="game-btn">Start Game</button>
+        </div>
+        <div id="game-over-screen" class="screen hidden">
+            <h2>Game Over!</h2>
+            <p id="final-score">Score: 0</p>
+            <p id="obstacle-name"></p>
+            <button id="restart-btn" class="game-btn">Play Again</button>
+        </div>
+        <div id="hud" class="hidden">
+            <div id="score">Score: 0</div>
+            <div id="current-obstacle">Obstacle: -</div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
