@@ -1,14 +1,49 @@
-// Game configuration
-const CONFIG = {
-    GRAVITY: 0.5,
-    JUMP_FORCE: -8,
-    BIRD_SIZE: 30,
-    OBSTACLE_WIDTH: 60,
-    OBSTACLE_GAP: 150,
-    OBSTACLE_SPEED: 3,
-    MIN_OBSTACLE_HEIGHT: 50,
-    MAX_OBSTACLE_HEIGHT: 300,
+// Difficulty configurations based on original Flappy Bird physics
+const DIFFICULTY_CONFIGS = {
+    easy: {
+        GRAVITY: 0.25,
+        JUMP_FORCE: -5,
+        BIRD_SIZE: 30,
+        OBSTACLE_WIDTH: 60,
+        OBSTACLE_GAP: 180,
+        OBSTACLE_SPEED: 2,
+        MIN_OBSTACLE_HEIGHT: 50,
+        MAX_OBSTACLE_HEIGHT: 300,
+    },
+    medium: {
+        GRAVITY: 0.3,
+        JUMP_FORCE: -5.5,
+        BIRD_SIZE: 30,
+        OBSTACLE_WIDTH: 60,
+        OBSTACLE_GAP: 150,
+        OBSTACLE_SPEED: 2.5,
+        MIN_OBSTACLE_HEIGHT: 50,
+        MAX_OBSTACLE_HEIGHT: 300,
+    },
+    hard: {
+        GRAVITY: 0.35,
+        JUMP_FORCE: -6,
+        BIRD_SIZE: 30,
+        OBSTACLE_WIDTH: 60,
+        OBSTACLE_GAP: 120,
+        OBSTACLE_SPEED: 3.5,
+        MIN_OBSTACLE_HEIGHT: 50,
+        MAX_OBSTACLE_HEIGHT: 300,
+    },
+    autoplay: {
+        GRAVITY: 0.3,
+        JUMP_FORCE: -5.5,
+        BIRD_SIZE: 30,
+        OBSTACLE_WIDTH: 60,
+        OBSTACLE_GAP: 150,
+        OBSTACLE_SPEED: 2.5,
+        MIN_OBSTACLE_HEIGHT: 50,
+        MAX_OBSTACLE_HEIGHT: 300,
+    }
 };
+
+// Current game configuration (will be set based on difficulty)
+let CONFIG = { ...DIFFICULTY_CONFIGS.medium };
 
 // Bangalore-themed obstacles with increasing difficulty
 const BANGALORE_OBSTACLES = [
@@ -32,9 +67,11 @@ let score = 0;
 let gameState = 'start'; // 'start', 'playing', 'gameOver'
 let animationId;
 let currentObstacleType;
+let selectedDifficulty = 'medium'; // default difficulty
+let isAutoplay = false;
 
 // DOM elements
-let startScreen, gameOverScreen, hud, startBtn, restartBtn;
+let startScreen, gameOverScreen, hud, difficultyButtons;
 let scoreDisplay, finalScoreDisplay, obstacleNameDisplay, currentObstacleDisplay;
 
 // Bird class
@@ -202,13 +239,37 @@ function getCurrentObstacleType() {
 
 // Update difficulty based on score
 function updateDifficulty() {
-    const baseSpeed = 3;
-    const speedIncrease = Math.floor(score / 5) * 0.5;
+    // Only increase difficulty dynamically if not in easy mode or autoplay
+    if (selectedDifficulty === 'easy' || selectedDifficulty === 'autoplay') {
+        return;
+    }
+    
+    const baseSpeed = DIFFICULTY_CONFIGS[selectedDifficulty].OBSTACLE_SPEED;
+    const speedIncrease = Math.floor(score / 5) * 0.3;
     CONFIG.OBSTACLE_SPEED = baseSpeed + speedIncrease;
     
-    const baseGap = 150;
-    const gapDecrease = Math.floor(score / 10) * 10;
+    const baseGap = DIFFICULTY_CONFIGS[selectedDifficulty].OBSTACLE_GAP;
+    const gapDecrease = Math.floor(score / 10) * 5;
     CONFIG.OBSTACLE_GAP = Math.max(100, baseGap - gapDecrease);
+}
+
+// Autoplay AI logic
+function autoplayControl() {
+    if (!isAutoplay || obstacles.length === 0) return;
+    
+    // Find the next obstacle
+    const nextObstacle = obstacles.find(obs => obs.x + obs.width > bird.x);
+    
+    if (nextObstacle) {
+        // Calculate the middle of the gap
+        const gapMiddle = nextObstacle.gapY + nextObstacle.gap / 2;
+        
+        // Jump if bird is below the gap middle and falling, or if too low
+        const jumpThreshold = gapMiddle - 10;
+        if (bird.y + bird.size / 2 > jumpThreshold && bird.velocity > 0) {
+            bird.jump();
+        }
+    }
 }
 
 // Initialize game
@@ -220,8 +281,7 @@ function init() {
     startScreen = document.getElementById('start-screen');
     gameOverScreen = document.getElementById('game-over-screen');
     hud = document.getElementById('hud');
-    startBtn = document.getElementById('start-btn');
-    restartBtn = document.getElementById('restart-btn');
+    difficultyButtons = document.querySelectorAll('.difficulty-btn');
     scoreDisplay = document.getElementById('score');
     finalScoreDisplay = document.getElementById('final-score');
     obstacleNameDisplay = document.getElementById('obstacle-name');
@@ -231,9 +291,24 @@ function init() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     
-    // Event listeners
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', restartGame);
+    // Difficulty selection event listeners
+    difficultyButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Remove selected class from all buttons
+            difficultyButtons.forEach(b => b.classList.remove('selected'));
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+            // Get difficulty and start game
+            selectedDifficulty = btn.dataset.difficulty;
+            setTimeout(() => startGame(), 300); // Small delay for visual feedback
+        });
+    });
+    
+    // Restart button
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+        restartBtn.addEventListener('click', restartGame);
+    }
     
     // Control listeners
     document.addEventListener('keydown', handleKeyPress);
@@ -264,21 +339,21 @@ function resizeCanvas() {
 }
 
 function handleKeyPress(e) {
-    if (e.code === 'Space' && gameState === 'playing') {
+    if (e.code === 'Space' && gameState === 'playing' && !isAutoplay) {
         e.preventDefault();
         bird.jump();
     }
 }
 
 function handleClick(e) {
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && !isAutoplay) {
         e.preventDefault();
         bird.jump();
     }
 }
 
 function handleTouch(e) {
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && !isAutoplay) {
         e.preventDefault();
         bird.jump();
     }
@@ -288,11 +363,12 @@ function startGame() {
     gameState = 'playing';
     score = 0;
     obstacles = [];
-    bird = new Bird();
     
-    // Reset difficulty
-    CONFIG.OBSTACLE_SPEED = 3;
-    CONFIG.OBSTACLE_GAP = 150;
+    // Apply difficulty configuration
+    CONFIG = { ...DIFFICULTY_CONFIGS[selectedDifficulty] };
+    isAutoplay = selectedDifficulty === 'autoplay';
+    
+    bird = new Bird();
     
     // Hide start screen, show HUD
     startScreen.classList.add('hidden');
@@ -304,13 +380,15 @@ function startGame() {
 
 function restartGame() {
     gameOverScreen.classList.add('hidden');
-    startGame();
+    startScreen.classList.remove('hidden');
+    gameState = 'start';
 }
 
 function updateScore() {
     scoreDisplay.textContent = `Score: ${score}`;
     currentObstacleType = getCurrentObstacleType();
-    currentObstacleDisplay.textContent = `Obstacle: ${currentObstacleType.name}`;
+    const modeText = isAutoplay ? ' (Autoplay 🤖)' : '';
+    currentObstacleDisplay.textContent = `Obstacle: ${currentObstacleType.name}${modeText}`;
 }
 
 function gameOver() {
@@ -336,6 +414,9 @@ function gameLoop() {
     gradient.addColorStop(1, '#E0F6FF');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Autoplay AI control
+    autoplayControl();
     
     // Update and draw bird
     const hitGround = bird.update();

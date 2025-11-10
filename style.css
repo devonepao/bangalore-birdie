@@ -105,6 +105,71 @@ p {
     transform: translateY(0);
 }
 
+#difficulty-selection {
+    margin-top: 20px;
+}
+
+#difficulty-selection h3 {
+    color: #667eea;
+    font-size: 1.3em;
+    margin-bottom: 15px;
+}
+
+.difficulty-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.difficulty-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Arial', sans-serif;
+}
+
+.difficulty-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+}
+
+.difficulty-btn.selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #764ba2;
+}
+
+.difficulty-btn.selected .difficulty-icon,
+.difficulty-btn.selected .difficulty-name,
+.difficulty-btn.selected .difficulty-desc {
+    color: white;
+}
+
+.difficulty-icon {
+    font-size: 2em;
+    margin-bottom: 8px;
+}
+
+.difficulty-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.difficulty-desc {
+    font-size: 0.75em;
+    color: #666;
+    text-align: center;
+}
+
 #hud {
     position: absolute;
     top: 20px;
@@ -162,6 +227,10 @@ p {
         font-size: 1.5em;
     }
     
+    h3 {
+        font-size: 1.1em;
+    }
+    
     p {
         font-size: 0.9em;
     }
@@ -169,6 +238,26 @@ p {
     .game-btn {
         padding: 12px 30px;
         font-size: 1em;
+    }
+    
+    .difficulty-buttons {
+        gap: 10px;
+    }
+    
+    .difficulty-btn {
+        padding: 10px;
+    }
+    
+    .difficulty-icon {
+        font-size: 1.5em;
+    }
+    
+    .difficulty-name {
+        font-size: 0.9em;
+    }
+    
+    .difficulty-desc {
+        font-size: 0.65em;
     }
     
     #hud {
@@ -195,6 +284,19 @@ p {
     
     h1 {
         font-size: 1.8em;
+    }
+    
+    h3 {
+        font-size: 1em;
+    }
+    
+    .difficulty-buttons {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .difficulty-btn {
+        padding: 12px;
     }
 }
 
