@@ -17,7 +17,31 @@
                 <p>Desktop: Press SPACE or Click to fly</p>
                 <p>Mobile: Tap to fly</p>
             </div>
-            <button id="start-btn" class="game-btn">Start Game</button>
+            <div id="difficulty-selection">
+                <h3>Select Difficulty</h3>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn" data-difficulty="easy">
+                        <span class="difficulty-icon">🌱</span>
+                        <span class="difficulty-name">Easy</span>
+                        <span class="difficulty-desc">Relaxed pace, larger gaps</span>
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="medium">
+                        <span class="difficulty-icon">⚡</span>
+                        <span class="difficulty-name">Medium</span>
+                        <span class="difficulty-desc">Balanced challenge</span>
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="hard">
+                        <span class="difficulty-icon">🔥</span>
+                        <span class="difficulty-name">Hard</span>
+                        <span class="difficulty-desc">Fast & challenging</span>
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="autoplay">
+                        <span class="difficulty-icon">🤖</span>
+                        <span class="difficulty-name">Autoplay</span>
+                        <span class="difficulty-desc">AI demo mode</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div id="game-over-screen" class="screen hidden">
             <h2>Game Over!</h2>
