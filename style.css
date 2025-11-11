@@ -279,24 +279,86 @@ p {
     }
     
     .screen {
-        padding: 20px;
+        padding: 15px 20px;
+        max-height: 95vh;
+        overflow-y: auto;
     }
     
     h1 {
-        font-size: 1.8em;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    
+    h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
     }
     
     h3 {
-        font-size: 1em;
+        font-size: 0.95em;
+        margin-bottom: 10px;
+    }
+    
+    p {
+        font-size: 0.95em;
+        margin: 8px 0;
+    }
+    
+    .controls-info {
+        margin: 12px 0;
+        padding: 10px;
+    }
+    
+    .controls-info p {
+        font-size: 0.8em;
+        margin: 3px 0;
     }
     
     .difficulty-buttons {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
     }
     
     .difficulty-btn {
-        padding: 12px;
+        padding: 10px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+    
+    .difficulty-icon {
+        font-size: 1.5em;
+        margin-bottom: 0;
+    }
+    
+    .difficulty-name {
+        font-size: 0.95em;
+        text-align: left;
+        flex: 1;
+    }
+    
+    .difficulty-desc {
+        font-size: 0.7em;
+        display: none;
+    }
+    
+    #difficulty-selection {
+        margin-top: 12px;
+    }
+    
+    .game-btn {
+        padding: 12px 30px;
+        font-size: 1em;
+        margin-top: 12px;
+    }
+    
+    #final-score {
+        font-size: 1.2em;
+        margin: 10px 0;
+    }
+    
+    #obstacle-name {
+        font-size: 0.95em;
     }
 }
 
